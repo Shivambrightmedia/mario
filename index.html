@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Mario Web - Play on Your TV</title>
+    <meta name="description"
+        content="Play Super Mario in your browser with your phone as a controller. Scan QR code to connect!">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Outfit:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="game-screen">
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loader-content">
+            <div class="mario-loader">
+                <div class="mario-sprite"></div>
+            </div>
+            <h1 class="game-title">SUPER MARIO WEB</h1>
+            <p class="loading-text">Loading Game Assets...</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="loading-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Code Connection Screen -->
+    <div id="connection-screen" class="connection-screen hidden">
+        <div class="connection-container">
+            <div class="title-section">
+                <h1 class="main-title">
+                    <span class="title-super">SUPER</span>
+                    <span class="title-mario">MARIO</span>
+                    <span class="title-web">WEB</span>
+                </h1>
+                <p class="subtitle">Scan to Connect Your Controller</p>
+            </div>
+
+            <div class="qr-section">
+                <div class="qr-container">
+                    <div class="qr-glow"></div>
+                    <div id="qr-loading" class="qr-loading">
+                        <div class="qr-spinner"></div>
+                        <span>Generating QR...</span>
+                    </div>
+                    <img id="qr-code" src="" alt="QR Code" class="qr-code hidden">
+                    <div class="qr-corners">
+                        <span class="corner top-left"></span>
+                        <span class="corner top-right"></span>
+                        <span class="corner bottom-left"></span>
+                        <span class="corner bottom-right"></span>
+                    </div>
+                </div>
+                <div class="room-info">
+                    <span class="label">Room ID:</span>
+                    <span id="room-id" class="room-id-display">--------</span>
+                </div>
+            </div>
+
+            <div class="status-section">
+                <div class="connection-status" id="connection-status">
+                    <div class="status-indicator waiting">
+                        <span class="pulse-ring"></span>
+                        <span class="status-dot"></span>
+                    </div>
+                    <span class="status-text">Waiting for controller...</span>
+                </div>
+                <div class="controller-count hidden" id="controller-section">
+                    <div class="controller-icon">🎮</div>
+                    <span id="controller-count">0</span> Controller(s) Connected
+                </div>
+            </div>
+
+            <div class="instructions">
+                <div class="instruction-item">
+                    <span class="step-number">1</span>
+                    <span class="step-text">Open camera on your phone</span>
+                </div>
+                <div class="instruction-item">
+                    <span class="step-number">2</span>
+                    <span class="step-text">Scan the QR code above</span>
+                </div>
+                <div class="instruction-item">
+                    <span class="step-number">3</span>
+                    <span class="step-text">Press START to play!</span>
+                </div>
+            </div>
+
+            <!-- Server Status -->
+            <div id="server-status" class="server-status">
+                <span class="server-dot"></span>
+                <span class="server-text">Connecting to server...</span>
+            </div>
+        </div>
+
+        <div class="decorative-elements">
+            <div class="floating-block block-1">?</div>
+            <div class="floating-block block-2">?</div>
+            <div class="floating-coin coin-1">🪙</div>
+            <div class="floating-coin coin-2">🪙</div>
+            <div class="floating-cloud cloud-1">☁️</div>
+            <div class="floating-cloud cloud-2">☁️</div>
+        </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="game-canvas-container hidden">
+        <div class="game-hud">
+            <div class="hud-item">
+                <span class="hud-label">MARIO</span>
+                <span class="hud-value" id="score">000000</span>
+            </div>
+            <div class="hud-item">
+                <span class="hud-label">COINS</span>
+                <span class="hud-value" id="coins">×00</span>
+            </div>
+            <div class="hud-item">
+                <span class="hud-label">WORLD</span>
+                <span class="hud-value">1-1</span>
+            </div>
+            <div class="hud-item">
+                <span class="hud-label">TIME</span>
+                <span class="hud-value" id="time">400</span>
+            </div>
+            <div class="hud-item lives">
+                <span class="hud-label">LIVES</span>
+                <span class="hud-value" id="lives">×3</span>
+            </div>
+        </div>
+        <canvas id="game-canvas"></canvas>
+
+        <!-- Pause Overlay -->
+        <div id="pause-overlay" class="pause-overlay hidden">
+            <div class="pause-content">
+                <h2>PAUSED</h2>
+                <p>Press START to continue</p>
+            </div>
+        </div>
+
+        <!-- Game Over Overlay -->
+        <div id="gameover-overlay" class="gameover-overlay hidden">
+            <div class="gameover-content">
+                <h2>GAME OVER</h2>
+                <p>Press START to play again</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Socket.io CDN -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="config.js"></script>
+    <script src="game.js"></script>
+</body>
+
+</html>
