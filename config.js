@@ -7,7 +7,7 @@ const GAME_CONFIG = {
     // Backend WebSocket server URL
     // For local development: 'http://localhost:3000'
     // For production: 'https://your-backend-url.onrender.com' (or Railway, Heroku, etc.)
-    SERVER_URL: 'http://localhost:3000',
+    SERVER_URL: 'https://mariobackend.onrender.com',
 
     // Frontend URL (for QR code generation)
     // For local development: 'http://localhost:5500' or wherever you serve the frontend
