@@ -166,24 +166,46 @@ class MarioGame {
         });
     }
 
-    async loadQRCode() {
+    async loadQRCode(retryCount = 0) {
         const qrLoading = document.getElementById('qr-loading');
         const qrCode = document.getElementById('qr-code');
+        const maxRetries = 3;
 
         try {
             // Build QR code URL with frontend URL parameter
             const frontendUrl = encodeURIComponent(GAME_CONFIG.FRONTEND_URL);
-            const response = await fetch(
-                `${GAME_CONFIG.SERVER_URL}/api/qrcode/${this.roomId}?frontendUrl=${frontendUrl}`
-            );
+            const url = `${GAME_CONFIG.SERVER_URL}/api/qrcode/${this.roomId}?frontendUrl=${frontendUrl}`;
+
+            console.log('Fetching QR code from:', url);
+
+            // Add timeout to fetch
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+
+            const response = await fetch(url, { signal: controller.signal });
+            clearTimeout(timeoutId);
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
             const data = await response.json();
+            console.log('QR code received successfully');
 
             qrCode.src = data.qrCode;
             qrCode.classList.remove('hidden');
             qrLoading.classList.add('hidden');
         } catch (error) {
             console.error('Failed to load QR code:', error);
-            qrLoading.innerHTML = '<span style="color: #E52521;">Failed to generate QR</span>';
+
+            if (retryCount < maxRetries) {
+                console.log(`Retrying QR code fetch (${retryCount + 1}/${maxRetries})...`);
+                qrLoading.innerHTML = `<div class="qr-spinner"></div><span>Retrying... (${retryCount + 1}/${maxRetries})</span>`;
+                await this.delay(2000); // Wait 2 seconds before retry
+                return this.loadQRCode(retryCount + 1);
+            }
+
+            qrLoading.innerHTML = '<span style="color: #E52521;">Failed to generate QR<br><small>Try refreshing the page</small></span>';
         }
     }
 
